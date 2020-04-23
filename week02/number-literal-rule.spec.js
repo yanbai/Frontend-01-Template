@@ -73,7 +73,7 @@ describe('number literal rule', ()=> {
     expect(numericLiteralRule('10.1')).toBe(true)
     expect(numericLiteralRule('10.1e+12')).toBe(true)
     expect(numericLiteralRule('10.e+12')).toBe(true)
-    
+
     expect(numericLiteralRule('.0')).toBe(true)
     expect(numericLiteralRule('.1')).toBe(true)
     expect(numericLiteralRule('.01')).toBe(true)
