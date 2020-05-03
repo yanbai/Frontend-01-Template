@@ -1,3 +1,5 @@
+// https://github.com/tc39/test262/tree/master/test/language/literals/numeric
+// test 262上面有非常专业 引擎级别的test case
 function _or() {
   return [...arguments].join('|')
 }
