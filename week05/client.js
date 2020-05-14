@@ -35,10 +35,6 @@ const net = require('net')
 //   console.log('disconnected from server');
 // });
 
-
-
-
-
 class Request {
     // method, url = host + port + path
     // body: k/v
@@ -75,6 +71,8 @@ ${this.bodyText}
     }
     send(connection) {
         return new Promise((res, rej) => {
+            let parser = new ResponseParser
+
             if(connection) {
                 connection.write(this.toString())
             } else {
@@ -86,7 +84,9 @@ ${this.bodyText}
                 })
             }
             connection.on('data', (data) => {
-                res(data.toString());
+                parser.receive(data.toString())
+                // res(data.toString());
+                console.log(parser.statusLine)
                 connection.end();
             });
             connection.on('error', (err) => {
@@ -95,6 +95,68 @@ ${this.bodyText}
                 connection.end()
             })
         })
+    }
+}
+
+class Response {
+
+}
+
+class ResponseParser{
+    constructor() {
+        // HTTP/1.1 200 OK
+
+        // content-type
+        // date
+        // connection
+        // transfer-encoding: chunked
+
+        // 26
+        // <html><body>hello world</body></html>
+
+        // 0
+        this.WAITING_STATUS_LINE = 0
+        this.WAITING_STATUS_LINE_END = 1
+
+        this.WAITING_HEADER_NAME = 2
+        this.WAITING_HEADER_SPACE = 3
+        this.WAITING_HEADER_VALUE = 4
+        this.WAITING_HEADER_LINE_END = 5
+        this.WAITING_HEADER_BLOCK_END = 6
+
+        this.current = this.WAITING_STATUS_LINE
+        this.statusLine = ""
+        this.headers = {}
+        this.headerName = ""
+        this.headerValue = ""
+    }
+    receive(string) {
+        for(let i=0; i<string.length; i++) {
+            this.receiveChar(string.charAt(i))
+        }
+    }
+    receiveChar(char) {
+        if(this.current === this.WAITING_STATUS_LINE) {
+            if(char === '\r') {
+                this.current = this.WAITING_STATUS_LINE_END
+            } else if(char === '\n') {
+                this.current = this.WAITING_HEADER_NAME
+            } else {
+                this.statusLine += char
+            }
+        }
+        // if(this.current === this.WAITING_HEADER_VALUE) {
+        //     if(char === '\r') {
+        //         this.current = this.WAITING_STATUS_LINE_END
+        //         this.headers[this.headerName] = this.headerValue
+        //     }
+        // }
+    }
+}
+
+class TrunkedBodyParser {
+    constructor() {
+
     }
 }
 
@@ -111,51 +173,5 @@ void async function() {
         }
     })
     let response = await request.send()
-    console.log(response)
+    // console.log(response)
 }()
-
-// class Response {
-
-// }
-
-// class ResponseParser{
-//     constructor() {
-//         this.WAITING_STATUS_LINE = 0
-//         this.WAITING_STATUS_LINE_END = 1
-//         this.WAITING_HEADER_NAME = 2
-//         this.WAITING_HEADER_SPACE = 3
-
-//         this.WAITING_HEADER_VALUE = 4
-//         this.WAITING_HEADER_LINE_END = 5
-
-//         this.WAITING_HEADER_BLOCK_END = 6
-//         this.current = this.WAITING_STATUS_LINE
-//         this.statusLine = ""
-//         this.headers = {}
-//         this.headerName = ""
-//         this.headerValue
-//     }
-//     receive(string) {
-//         for(let i=0; i<string.length; i++) {
-//             this.receiveChar(string.charAt(i))
-//         }
-//     }
-//     receiveChar(char) {
-//         if(this.current === this.WAITING_STATUS_LINE) {
-//             if(char === '\r') {
-//                 this.status = WAITING_STATUS_LINE_END
-//             } else if(char === '\n') {
-//                 this.status = WAITING_HEADER_NAME
-//             } else {
-//                 this.statusLine += char
-//             }
-//         }
-//         if(this.current === this.WAITING_HEADER_VALUE) {
-//             if(char === '\r') {
-//                 this.current = this.WAITING_STATUS_LINE_END
-//                 this.headers[this.headerName] = this.headerValue
-//             }
-//         }
-
-//     }
-// }

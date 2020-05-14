@@ -4,6 +4,9 @@
 https://tools.ietf.org/html/rfc2616
 这是http1.1的版本 150页左右 比http2.0的版本轻量 相对比较省力气
 
+NODE document
+https://nodejs.org/docs/latest-v12.x/api/net.html
+
 ## 请求标准
 example:
 POST / HTTP/1.1
