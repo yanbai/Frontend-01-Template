@@ -87,6 +87,7 @@ ${this.bodyText}
                 parser.receive(data.toString())
                 // res(data.toString());
                 console.log(parser.statusLine)
+                console.log(parser.headers)
                 connection.end();
             });
             connection.on('error', (err) => {
@@ -124,6 +125,8 @@ class ResponseParser{
         this.WAITING_HEADER_LINE_END = 5
         this.WAITING_HEADER_BLOCK_END = 6
 
+        this.WAITING_BODY = 7
+
         this.current = this.WAITING_STATUS_LINE
         this.statusLine = ""
         this.headers = {}
@@ -145,12 +148,41 @@ class ResponseParser{
                 this.statusLine += char
             }
         }
-        // if(this.current === this.WAITING_HEADER_VALUE) {
-        //     if(char === '\r') {
-        //         this.current = this.WAITING_STATUS_LINE_END
-        //         this.headers[this.headerName] = this.headerValue
-        //     }
-        // }
+
+        if(this.current === this.WAITING_STATUS_LINE_END) {
+            console.log(char.charCodeAt(0))
+            if(char === '\n') {
+                this.current = this.WAITING_HEADER_NAME
+            }
+        }
+        if(this.current === this.WAITING_HEADER_NAME) {
+            console.log(char)
+            if(char === ':') {
+                this.current = this.WAITING_HEADER_SPACE
+            } else if (char === '\r') {
+                this.current = this.WAITING_BODY
+            }  else {
+                this.headerName += char
+            }
+        }
+        if(this.current === this.WAITING_HEADER_SPACE) {
+            if(char === ' ') {
+                this.current = this.WAITING_HEADER_VALUE
+            }
+        }
+        if(this.current === this.WAITING_HEADER_VALUE) {
+            if(char === '\r') {
+                this.current = this.WAITING_STATUS_LINE_END
+                this.headers[this.headerName] = this.headerValue
+            } else {
+                this.headerValue += char
+            }
+        }
+        if(this.current === this.WAITING_HEADER_LINE_END) {
+            if(char === '\n') {
+                this.current = this.WAITING_HEADER_VALUE
+            }
+        }
     }
 }
 
