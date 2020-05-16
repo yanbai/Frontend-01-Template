@@ -80,27 +80,26 @@ ${this.bodyText}
                     host: this.host,
                     port: this.port
                 }, () => {
+                    console.log('///////////send data/////////////')
+                    console.log(this.toString())
                     connection.write(this.toString())
                 })
             }
             connection.on('data', (data) => {
                 parser.receive(data.toString())
-                // res(data.toString());
-                console.log(parser.statusLine)
-                console.log(parser.headers)
-                connection.end();
+                if(parser.isFinished) {
+                    res(parser.response)
+                }
+                // console.log('/////////////data receive///////////////')
+                // console.log(data.toString())
+                connection.end()
             });
             connection.on('error', (err) => {
-                console.log('errerr')
                 rej(err)
                 connection.end()
             })
         })
     }
-}
-
-class Response {
-
 }
 
 class ResponseParser{
@@ -132,6 +131,20 @@ class ResponseParser{
         this.headers = {}
         this.headerName = ""
         this.headerValue = ""
+
+        this.bodyParser = null
+    }
+    get isFinished() {
+        return this.bodyParser && this.bodyParser.isFinished
+    }
+    get response() {
+        this.statusLine.match(/HTTP\/1.1 ([0-9]+) ([\s\S]+)/)
+        return {
+            statusCode: RegExp.$1,
+            statusText: RegExp.$2,
+            headers: this.headers,
+            body: this.bodyParser.content.join('')
+        }
     }
     receive(string) {
         for(let i=0; i<string.length; i++) {
@@ -148,47 +161,110 @@ class ResponseParser{
                 this.statusLine += char
             }
         }
-
-        if(this.current === this.WAITING_STATUS_LINE_END) {
-            console.log(char.charCodeAt(0))
+        // header
+        else if(this.current === this.WAITING_STATUS_LINE_END) {
             if(char === '\n') {
                 this.current = this.WAITING_HEADER_NAME
             }
         }
-        if(this.current === this.WAITING_HEADER_NAME) {
-            console.log(char)
+        else if(this.current === this.WAITING_HEADER_NAME) {
             if(char === ':') {
                 this.current = this.WAITING_HEADER_SPACE
             } else if (char === '\r') {
-                this.current = this.WAITING_BODY
+                this.current = this.WAITING_HEADER_BLOCK_END
             }  else {
                 this.headerName += char
             }
         }
-        if(this.current === this.WAITING_HEADER_SPACE) {
+        else if(this.current === this.WAITING_HEADER_SPACE) {
             if(char === ' ') {
                 this.current = this.WAITING_HEADER_VALUE
             }
         }
-        if(this.current === this.WAITING_HEADER_VALUE) {
+        else if(this.current === this.WAITING_HEADER_VALUE) {
             if(char === '\r') {
-                this.current = this.WAITING_STATUS_LINE_END
-                this.headers[this.headerName] = this.headerValue
+                this.current = this.WAITING_HEADER_LINE_END
             } else {
                 this.headerValue += char
             }
         }
-        if(this.current === this.WAITING_HEADER_LINE_END) {
+        else if(this.current === this.WAITING_HEADER_LINE_END) {
             if(char === '\n') {
-                this.current = this.WAITING_HEADER_VALUE
+                this.headers[this.headerName] = this.headerValue
+                this.headerName = ""
+                this.headerValue = ""
+                this.current = this.WAITING_HEADER_NAME
             }
+        }
+        // body
+        else if(this.current === this.WAITING_HEADER_BLOCK_END) {
+            if(char === '\n') {
+                this.current = this.WAITING_BODY
+                if(this.headers['Transfer-Encoding'] === 'chunked') {
+                    this.bodyParser = new TrunkedBodyParser()
+                }
+            }
+        }
+        else if(this.current === this.WAITING_BODY) {
+            this.bodyParser.receiveChar(char)
         }
     }
 }
 
 class TrunkedBodyParser {
+    // 2
+    // rn
+    // o
+    // k
+    // rn
+    // 0
+    // rn
+    // rn
     constructor() {
-
+        this.WAITING_LENGTH = 0
+        this.WAITING_LENGTH_LINE_END = 1
+        
+        this.READING_TRUNK = 2
+        this.WAITING_NEW_LINE = 3
+        this.WAITING_NEW_LINE_END = 4
+        
+        this.current = this.WAITING_LENGTH
+        this.isFinished = false
+        this.length = 0
+        this.content = []
+    }
+    receiveChar(char){
+        if(this.current === this.WAITING_LENGTH) {
+            if(char === '\r') {
+                if(this.length === 0) {
+                    console.log('///////////////receive body in this.content////////////')
+                    console.log(this.content)
+                    this.isFinished = true
+                }
+                this.current = this.WAITING_LENGTH_LINE_END
+            } else {
+                this.length *= 16
+                this.length += char.codePointAt(0) - '0'.codePointAt(0)
+            }
+        } else if (this.current === this.WAITING_LENGTH_LINE_END) {
+            if (char === '\n') {
+                this.current = this.READING_TRUNK
+            }
+        } else if (this.current === this.READING_TRUNK) {
+            this.content.push(char)
+            this.length --
+            if(this.length === 0) {
+                this.current = this.WAITING_NEW_LINE
+            }
+        } else if (this.current === this.WAITING_NEW_LINE) {
+            if (char === '\r') {
+                this.current = this.WAITING_NEW_LINE_END
+            }
+        } else if (this.current === this.WAITING_NEW_LINE_END) {
+            if (char === '\n') {
+                this.current = this.WAITING_LENGTH
+            }
+        }
     }
 }
 
@@ -205,5 +281,6 @@ void async function() {
         }
     })
     let response = await request.send()
-    // console.log(response)
+    console.log('///////////response/////////////')
+    console.log(response)
 }()
