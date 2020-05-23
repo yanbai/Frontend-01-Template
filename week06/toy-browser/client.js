@@ -1,4 +1,5 @@
 const net = require('net')
+const htmlParser = require('./html-parser')
 
 // const client = net.createConnection({ 
 //     port: 8088,
@@ -71,7 +72,7 @@ ${this.bodyText}
     }
     send(connection) {
         return new Promise((res, rej) => {
-            let parser = new ResponseParser
+            let response = new ResponseParser
 
             if(connection) {
                 connection.write(this.toString())
@@ -86,12 +87,12 @@ ${this.bodyText}
                 })
             }
             connection.on('data', (data) => {
-                parser.receive(data.toString())
-                if(parser.isFinished) {
-                    res(parser.response)
+                response.receive(data.toString())
+                if(response.isFinished) {
+                    res(response.response)
                 }
-                // console.log('/////////////data receive///////////////')
-                // console.log(data.toString())
+                console.log('/////////////data receive///////////////')
+                console.log(data.toString())
                 connection.end()
             });
             connection.on('error', (err) => {
@@ -237,14 +238,12 @@ class TrunkedBodyParser {
         if(this.current === this.WAITING_LENGTH) {
             if(char === '\r') {
                 if(this.length === 0) {
-                    console.log('///////////////receive body in this.content////////////')
-                    console.log(this.content)
                     this.isFinished = true
                 }
                 this.current = this.WAITING_LENGTH_LINE_END
             } else {
                 this.length *= 16
-                this.length += char.codePointAt(0) - '0'.codePointAt(0)
+                this.length += parseInt(char, 16)
             }
         } else if (this.current === this.WAITING_LENGTH_LINE_END) {
             if (char === '\n') {
@@ -281,6 +280,9 @@ void async function() {
         }
     })
     let response = await request.send()
-    console.log('///////////response/////////////')
-    console.log(response)
+    // console.log('///////////response/////////////')
+    // console.log(response)
+    let dom = htmlParser.parseHTML(response.body)
+    console.log('///////////dom/////////////')
+    console.log(dom)
 }()
