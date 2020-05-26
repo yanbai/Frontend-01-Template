@@ -65,12 +65,8 @@ function compare(sp1, sp2) {
 }
 
 function computeCSS(element) {
-    // console.log('---------------rules element------------------')
-    // console.log(rules)
     // console.log('compute css for element', element)
     let elements = stack.slice().reverse()
-    // console.log('---------------elements------------------')
-    // console.log(elements)
     if(!element.computedStyle) {
         element.computedStyle = {}
     }
@@ -121,10 +117,6 @@ function emit(token) {
             parent: null
         }
         element.tagName = token.tagName
-        // console.log('---------token-----------')
-        // console.log(token)
-        // console.log('-----------stack------------')
-        // console.log(stack)
         for(let key in token) {
             if(key != 'type' && key != 'tagName') {
                 element.attributes.push({
@@ -137,14 +129,12 @@ function emit(token) {
         computeCSS(element)
 
         top.children.push(element)
-        element.parent = top
+        // element.parent = top
         if(!token.isSelfClosing) {
             stack.push(element)
         }
         currentTextNode = null
     } else if(token.type === 'endTag') {
-        // console.log('---------------currentToken--------------')
-        // console.log(currentToken)
         if(top.tagName != token.tagName) {
             throw new Error('Tag start end doesn\'t match')
         } else {
@@ -166,6 +156,58 @@ function emit(token) {
         currentTextNode.content += token.content
     }
 }
+// yb added
+// let styleContent = `body div #myid{
+//     width: 100px;
+//     background-color: #ff5000;
+// }
+// body div img {
+//     width: 30px;
+//     background-color: #ff1111;
+// }`
+
+// addCSSRules(styleContent)
+// stack = [{
+//     type: 'document',
+//     children: []
+// }, {
+//     type: 'element',
+//     tagName: 'html',
+//     attributes: [],
+//     computedStyle: {},
+//     children: [],
+//     parent: {}
+// }, {
+//     type: 'element',
+//     tagName: 'body',
+//     attributes: [],
+//     computedStyle: {},
+//     children: [],
+//     parent: {}
+// }, {
+//     type: 'element',
+//     tagName: 'div',
+//     attributes: [],
+//     computedStyle: {},
+//     children: [],
+//     parent: {}
+// }]
+
+// let element = {
+//     type: 'element',
+//     tagName: 'img',
+//     attributes: [{
+//         name: 'id',
+//         value: 'myid'
+//     }, {
+//         name: 'isSelfClosing',
+//         value: true
+//     }],
+//     children: [],
+//     parent: null
+// }
+
+// computeCSS(element)
 
 function data(c) {
     if(c == "<") {
@@ -389,5 +431,6 @@ function parseHTML (html){
         state = state(c)
     }
     state = state(EOF)
+    return stack[0]
 }
 module.exports.parseHTML = parseHTML

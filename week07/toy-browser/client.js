@@ -1,5 +1,7 @@
 const net = require('net')
 const htmlParser = require('./html-parser')
+const images = require('images')
+const render = require('./render')
 
 // const client = net.createConnection({ 
 //     port: 8088,
@@ -283,6 +285,10 @@ void async function() {
     // console.log('///////////response/////////////')
     // console.log(response)
     let dom = htmlParser.parseHTML(response.body)
-    console.log('///////////dom/////////////')
-    console.log(dom)
+    // console.log('///////////dom/////////////')
+    // console.log(dom.children[0].children[3].children[1].children[1].computedStyle)
+    
+    let viewport = images(800, 600)
+    render(viewport, dom)
+    viewport.save('viewport.jpg')
 }()

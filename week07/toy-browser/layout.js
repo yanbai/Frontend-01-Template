@@ -29,7 +29,7 @@ function layout(element) {
         return (a.order || 0) - (b.order || 0)
     })
 
-    let style = elementStyle
+    let style = elementStyle;
 
     ['width', 'height'].forEach(size => {
         if(style[size] === 'auto' || style[size] === '') {
@@ -47,7 +47,7 @@ function layout(element) {
         style.flexWrap = 'nowrap'
     if(!style.alignContent || style.alignContent === 'auto')
         style.alignContent = 'stretch'
-    
+    // 确认方向
     let mainSize, mainStart, mainEnd, mainSign, mainBase,
         crossSize, crossStart, crossEnd, crossSign, crossBase
     if(style.flexDirection === 'row') {
@@ -104,12 +104,14 @@ function layout(element) {
         crossBase = 0
         crossSign = 1
     }
-
+    // 分行，有个flext line的概念，每一行都是一个flex line
+    // main space: 该行剩余空间 算剩余空间
     let isAutoMainSize = false
     if(!style[mainSize]) { // auto sizing
         elementStyle[mainSize] = 0
         for(let i=0; i<items.length; i++) {
             let item = items[i]
+            let itemStyle = getStyle(item)
             if(itemStyle[mainSize] !== null || itemStyle[mainSize] !== (void 0)) {
                 elementStyle[mainSize] = elementStyle[mainSize] + itemStyle[mainSize]
             }
@@ -133,6 +135,7 @@ function layout(element) {
         }
 
         if(itemStyle.flex) {
+            // 这个分支是分行最重要的
             flexLine.push(item)
         } else if(style.flexWrap === 'nowrap' && isAutoMainSize) {
             mainSpace -= itemStyle[mainSize]
@@ -141,6 +144,7 @@ function layout(element) {
             }
             flexLine.push(item)
         } else {
+            // 这个分支是分行最重要的
             if(itemStyle[mainSize] > style[mainSize]) {
                 itemStyle[mainSize] = style[mainSize]
             }
@@ -172,6 +176,7 @@ function layout(element) {
         flexLine.crossSpace = crossSpace
     }
 
+    // 计算主轴
     if(mainSpace < 0) {
         // overflow (happens only if container is single line), scale every item
         let scale = style[mainSize]/(style[mainSize]- mainSpace)
@@ -239,7 +244,7 @@ function layout(element) {
                 }
                 if(style.justifyContent === 'space-around') {
                     let step = mainSpace / items.length * mainSign
-                    let currentMain = mainBase
+                    let currentMain = step / 2 + mainBase
                 }
                 for(let i=0; i<items.length; i++) {
                     let item = items[i]
@@ -252,7 +257,7 @@ function layout(element) {
     }
     // compute the cross axis sizes
     // align-items, align-self
-    let crossSpace
+    // let crossSpace
     if(!style[crossSize]) { // zuto sizing
         crossSpace = 0
         elementStyle[crossSize] = 0
@@ -335,7 +340,33 @@ function layout(element) {
         }
         crossBase += crossSign * (lineCrossSize + step)
     })
-    console.log(items)
+    // console.log(items)
 }
-
+// yb added
+// let element = {
+//     type: 'element',
+//     tagName: 'style',
+//     attributes: [],
+//     computedStyle: {},
+//     children: [{
+//         type: 'text',
+//         content: '\nbody div #myid{\n    width: 100px;\n    background-color: #ff5000;\n}\nbody div img {\n    width: 30px;\n    background-color: #ff1111;\n}\n    '
+//     }],
+//     parent: {
+//         type: 'element',
+//         tagName: 'head',
+//         attributes: [],
+//         computedStyle: {},
+//         children: [],
+//         parent: {
+//             type: 'element',
+//             tagName: 'html',
+//             attributes: [],
+//             computedStyle: {},
+//             children: [],
+//             parent: {}
+//         }
+//     }
+// }
+// layout(element)
 module.exports = layout
