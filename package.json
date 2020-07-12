@@ -3,6 +3,7 @@
     "test": "jest"
   },
   "devDependencies": {
-    "jest": "^25.4.0"
+    "jest": "^25.4.0",
+    "webpack-cli": "^3.3.12"
   }
 }
