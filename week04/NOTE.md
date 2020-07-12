@@ -1,6 +1,7 @@
-# 结构化编程 微任务 宏任务 4.30
+# 结构化编程 微任务 宏任务 4.30 THU
 
 ## 40 - 1:08，40分之前不用看
+```md
 introduce 微任务, promise 队列
 宏任务 可能是事件循环的两个节点 setimeout是事件循环的一种形式
 
@@ -14,6 +15,7 @@ setimeout实际上是宿主环境的API ？如何证明？
 
 微任务是为了then（promise）而实现的，但是并不是有then才有微任务
 有then才有一个宏任务中出现多个微任务的情况
+```
 ```bash
 new Promise(resolve => resolve()).then(() => console.log('a'))
 

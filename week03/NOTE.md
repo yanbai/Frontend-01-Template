@@ -1,4 +1,4 @@
-Thu 4.23 digest 基本类型
+Thu 4.23 THU digest 基本类型
 # 0:00-0:20 浮点数在bit中的储存 64bit 实际上是week2的补充
 
 ## background 二进制数组
@@ -73,7 +73,7 @@ text是document字符串
 document是js原生节点的document
 
 ### 6. 位移运算符
-
+```md
 移位运算就是对二进制进行有规律低移位，移位运算可以设计很多奇妙的效果，在图形图像编程中应用广泛。
 "<<"
 左移，符号位不变，右侧空出位置，填充为0，超出32位则丢弃
@@ -95,7 +95,7 @@ console.log(-1000 >> 8) //-4
 11111111 11111111 11111111 11111100      //-4
 
 ">>>" 待研究
-
+```
 ## digest
 ### 1. application code
 ```bash
@@ -173,6 +173,7 @@ function sign(number) {
 ```
 
 ### 4. 除尽
+```md
 对于二进制小数，如果不断*2之后可以转化成整数，则可以除尽，不会有精度丢失
 0.5 可以除尽
 0.2 不可以除尽
@@ -180,8 +181,9 @@ function sign(number) {
 对于十进制小数，如果不断*10之后可以转化成整数，则可以除尽
 如 0.1 0.2可以除尽，没有精度丢失
 0.3333333...不可以除尽，有精度丢失
-
+```
 ### 5. 第一位是1
+```md
 对于整数 所有整数 二进制第一位都是1
 6: 110
 5: 101
@@ -193,8 +195,9 @@ function sign(number) {
 0.5=2^-1, 就是二进制数10的-1次方，第一位也是1
 0.2=2^xxxx 就是二进制数10的xxxx次方，第一位也是1
 所有数第一位都是1
-
+```
 ### 6. 1.3+1.1-2.4 < ebsilon 失效
+```md
 1.3转2进制浮点数有精度损失
 1.1转2进制浮点数有精度损失
 2.4转2进制浮点数有精度损失
@@ -203,7 +206,7 @@ function sign(number) {
 
 不能用ebsilon判断运算
 要自己创造一个精度损失判断
-
+```
 ### 7. 1.1*10 比 1.1+1.1 精度损失大
 
 ### 8. 小数会存成64bit浮点数
@@ -215,11 +218,37 @@ convertStringToNumber
 convertNumberToString
 
 # 160:00 - ending Q&A
-
-byte = byte<<1 左移放大 相当于乘以一个x(这里x为2)，应用场景： "123" 转 123， 或者 0.123 取 123(小数数字化string)
-byte = byte<<1 右移缩小 相当于除以一个x(这里x为2)，应用场景 "123" 转 0.123(小数string化数字)
+```md
+byte = byte<<1 左移放大 相当于乘以一个x(这里x为2)，应用场景： "123" 转 123， 或者 0.123 取 123(小数数字转string)
+byte = byte<<1 右移缩小 相当于除以一个x(这里x为2)，应用场景 "123" 转 0.123(小数string转数字)
 参考stringtonumber numbertostring
 
 正则实际上设计本意是有限状态机
 不适合做有回溯的match 性能不好
 后面做模板engine会用到状态机
+```
+## 十进制转二进制
+```js
+var num = 100;
+console.log(num.toString(2));
+语法
+NumberObject.toString(radix);
+```
+## 二进制转十进制
+```js
+var num = 1100100;
+console.log(parseInt(num,2));
+语法
+parseInt(string, radix);
+
+parseInt(num,8);   //八进制转十进制
+parseInt(num,16);   //十六进制转十进制
+parseInt(num).toString(8)  //十进制转八进制
+parseInt(num).toString(16)   //十进制转十六进制
+parseInt(num,2).toString(8)   //二进制转八进制
+parseInt(num,2).toString(16)  //二进制转十六进制
+parseInt(num,8).toString(2)   //八进制转二进制
+parseInt(num,8).toString(16)  //八进制转十六进制
+parseInt(num,16).toString(2)  //十六进制转二进制
+parseInt(num,16).toString(8)  //十六进制转八进制
+```

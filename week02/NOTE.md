@@ -3,13 +3,13 @@
 
 2. Learn more about code point and encoding
 
-reference: 
+reference:
 http://www.fileformat.info/index.htm
 http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html
 
 
 # 4.16 语言通识
-
+```md
 "a"
 
 "b"
@@ -27,9 +27,11 @@ BNF(巴克斯)
 1+2*3
 <ADD> = <MULTIPLE> | <ADD> "+" <MULTIPLE>
 
-<logic> = <add> | 
+<logic> = <add> |
     <logic> "||" <add> |
     <logic> "&&" <add>
 
 终结符：+ - * /
 非终结符: ADD MULTIPLE
+
+```

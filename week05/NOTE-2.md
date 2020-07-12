@@ -16,7 +16,7 @@ Content-Type: application/x-www-form-urlencoded
 field1=aaa&code=x%3D1
 
 # 标准解释
-request line: 
+request line:
 method path httpVersion
 POST / HTTP/1.1
 
