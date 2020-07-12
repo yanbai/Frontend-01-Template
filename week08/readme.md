@@ -28,8 +28,9 @@ todo
 ```
 ### steps
 ```md
-run webpack in CMD
-open index.html
+1. run webpack in CMD
+2. modify script in index.html: let match = window.match_v1
+3. open index.html and check console log
 ```
 ### note
 ```md
@@ -41,3 +42,23 @@ function splitSelector(selector) {
 }
 
 ```
+
+## solution 2
+### description
+```md
+使用范围
+同 solution 1
+
+核心代码在 selectorMatch.js
+用状态机实现 complex match
+
+todo
+  自己实现selector parser
+```
+### steps
+```md
+1. run webpack in CMD
+2. modify script in index.html: let match = window.match_v2
+3. open index.html and check console log
+```
+

@@ -24,6 +24,73 @@
     </div>
     <div class="svg"></div>
   </div>
-  <script src="./dist/main.js"></script>
+  <script src="./dist/match_v1.js"></script>
+  <script src="./dist/match_v2.js"></script>
+  <script>
+let match = window.match_v2
+let res_1 = match('.title', document.getElementById('ele_1'))
+let res_2 = match('h2[name]', document.getElementById('ele_2'))
+let res_3 = match('h2[name^="product"]', document.getElementById('ele_3'))
+let res_4 = match('h2[name$="owner"]', document.getElementById('ele_4'))
+let res_5 = match('#ele_1', document.getElementById('ele_1'))
+let res_6 = match('h2[name="product_title"]', document.getElementById('ele_2'))
+
+let res_7 = match('h2[name="product_error"]', document.getElementById('ele_2')) // false
+let res_8 = match('h2[name^="error"]', document.getElementById('ele_2')) // false
+let res_9 = match('h2[name$="error"]', document.getElementById('ele_2')) // false
+let res_10 = match('h3', document.getElementById('ele_2')) // false
+let res_11 = match('#error', document.getElementById('ele_2')) // false
+let res_12 = match('.error', document.getElementById('ele_2')) // false
+
+let res_13 = match('.container > .title', document.getElementById('ele_1'))
+let res_14 = match('.container > .error', document.getElementById('ele_1')) // false
+let res_15 = match('.error > .title', document.getElementById('ele_1')) // false
+
+let res_16 = match('.title + [name="product_title"]', document.getElementById('ele_2'))
+let res_17 = match('.error + [name="product_title"]', document.getElementById('ele_2')) // false
+let res_18 = match('.title + .error', document.getElementById('ele_2')) // false
+
+let res_19 = match('.page [name="product_title"]', document.getElementById('ele_2'))
+let res_20 = match('.outer [name="product_title"]', document.getElementById('ele_2'))
+let res_21 = match('.error [name="product_title"]', document.getElementById('ele_2')) // false
+let res_22 = match('.page [name="error"]', document.getElementById('ele_2')) // false
+
+let res_23 = match('#ele_2 ~ [name="product_price"]', document.getElementById('ele_3'))
+let res_24 = match('#ele_2 ~ [name]', document.getElementById('ele_3'))
+let res_25 = match('#ele_4 ~ [name]', document.getElementById('ele_3')) // false
+let res_26 = match('#error ~ [name]', document.getElementById('ele_3')) // false
+
+console.log('correct answer: true', res_1)
+console.log('correct answer: true', res_2)
+console.log('correct answer: true', res_3)
+console.log('correct answer: true', res_4)
+console.log('correct answer: true', res_5)
+console.log('correct answer: true', res_6)
+
+console.log('correct answer: false', res_7)
+console.log('correct answer: false', res_8)
+console.log('correct answer: false', res_9)
+console.log('correct answer: false', res_10)
+console.log('correct answer: false', res_11)
+console.log('correct answer: false', res_12)
+
+console.log('correct answer: true', res_13)
+console.log('correct answer: false', res_14)
+console.log('correct answer: false', res_15)
+
+console.log('correct answer: true', res_16)
+console.log('correct answer: false', res_17)
+console.log('correct answer: false', res_18)
+
+console.log('correct answer: true', res_19)
+console.log('correct answer: true', res_20)
+console.log('correct answer: false', res_21)
+console.log('correct answer: false', res_22)
+
+console.log('correct answer: true', res_23)
+console.log('correct answer: true', res_24)
+console.log('correct answer: false', res_25)
+console.log('correct answer: false', res_26)
+  </script>
 </body>
 </html>
