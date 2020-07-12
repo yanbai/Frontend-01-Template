@@ -39,6 +39,5 @@ function splitSelector(selector) {
     .replace(/\s+/g, ' ') // collapase redudant space
     .split(/(?=[>~+\s])|(?<=[>~+\s])|\s(?=[^\]]*?(?:\[|$))/g); // split css selectors
 }
-选择器分组参考自张继业
-https://github.com/jzhang026/Frontend-01-Template
+
 ```
