@@ -43,7 +43,6 @@ https://www.w3.org/TR/selectors-4/#specificity-rules
 5. div.a
 [0, 0, 1, 1]
 
-
 ## 伪类
 
 ## 伪元素
