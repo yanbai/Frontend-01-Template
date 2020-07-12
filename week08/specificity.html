@@ -1,0 +1,18 @@
+<style>
+/* div#a.b .c[id=d]{
+  color: red;
+} */
+#a:not(#b) {
+  color: red;
+}
+#d ~ .e {
+  color: green;
+}
+</style>
+<div id="a" class="b">
+  <div class="e">d's sibling</div>
+  <div class="e">d's sibling</div>
+  <div class="c" id="d">d</div>
+  <div class="e">d's sibling</div>
+  <div class="e">d's sibling</div>
+</div>
