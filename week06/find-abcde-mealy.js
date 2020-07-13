@@ -1,16 +1,16 @@
-function finda(s) {
-    let state = start
+function start(s) {
+    let state = finda
     for (let c of s) {
         state = state(c)
     }
     return state === end
 }
 
-function start(c) {
+function finda(c) {
     if(c === 'a') {
         return findB
     } else {
-        return start
+        return finda
     }
 }
 
@@ -22,7 +22,7 @@ function findB(c) {
     if(c === 'b') {
         return findC
     } else {
-        return start(c)
+        return finda(c)
     }
 }
 
@@ -30,7 +30,7 @@ function findC(c) {
     if(c === 'c') {
         return findD
     } else {
-        return start(c)
+        return finda(c)
     }
 }
 
@@ -38,7 +38,7 @@ function findD(c) {
     if(c === 'd') {
         return findE
     } else {
-        return start(c)
+        return finda(c)
     }
 }
 
@@ -46,9 +46,9 @@ function findE(c) {
     if(c === 'e') {
         return end
     } else {
-        return start(c)
+        return finda(c)
     }
 }
 
-let res = finda('sfsabcdesdf')
+let res = start('sfsabcdesdf')
 console.log(res)
