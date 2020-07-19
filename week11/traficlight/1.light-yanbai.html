@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  .light {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    display: flex;
+    opacity: 0.3;
+  }
+  .yellow {
+    background-color: yellow;
+  }
+  .red {
+    background-color: red;
+  }
+  .green {
+    background-color: green;
+  }
+  .active {
+    opacity: 1;
+  }
+</style>
+<body>
+  <div id="app"></div>
+  <!-- <div class="light red"></div>
+  <div class="light yellow"></div>
+  <div class="light green"></div> -->
+<script>
+  let lightStatus = 1
+  function switchLight() {
+    if(lightStatus === 1) {
+      lightStatus = 2
+    } else if(lightStatus === 2){
+      lightStatus = 3
+    } else if(lightStatus === 3) {
+      lightStatus = 1
+    }
+  }
+  function render() {
+    document.getElementById('app').innerHTML = ''
+    let red = document.createElement('div')
+    let green = document.createElement('div')
+    let yellow = document.createElement('div')
+
+    red.classList.add('light')
+    red.classList.add('red')
+    green.classList.add('light')
+    green.classList.add('green')
+    yellow.classList.add('light')
+    yellow.classList.add('yellow')
+    red.classList.remove('active')
+    green.classList.remove('active')
+    yellow.classList.remove('active')
+
+    if(lightStatus === 1) {
+      red.classList.add('active')
+    } else if(lightStatus === 2) {
+      green.classList.add('active')
+    } else if(lightStatus === 3) {
+      yellow.classList.add('active')
+    }
+
+    document.getElementById('app').appendChild(red)
+    document.getElementById('app').appendChild(green)
+    document.getElementById('app').appendChild(yellow)
+  }
+  // async function changeTo2() {
+  //   return new Promise(function(res, rej) {
+  //     setTimeout(res(2), 200)
+  //   })
+  // }
+  // async function changeTo3() {
+  //   return new Promise(function(res, rej) {
+  //     setTimeout(res(3), 300)
+  //   })
+  // }
+  // async function changeTo1() {
+  //   return new Promise(function(res, rej) {
+  //     setTimeout(res(1), 100)
+  //   })
+  // }
+  // lightStatus = await changeTo1()
+  function changeTo1() {
+    lightStatus = 1
+    render()
+    setTimeout(() => {
+      changeTo2()
+    }, 1000)
+  }
+  function changeTo2() {
+    lightStatus = 2
+    render()
+    setTimeout(() => {
+      changeTo3()
+    }, 2000)
+  }
+  function changeTo3() {
+    lightStatus = 3
+    render()
+    setTimeout(() => {
+      changeTo1()
+    }, 3000)
+  }
+  // can call changeTo1 to fire
+
+  // winter method
+  function go() {
+    green()
+    setTimeout(function() {
+      yellow()
+      setTimeout(function() {
+        red()
+        setTimeout(function() {
+          go()
+        }, 3000)
+      }, 2000)
+    }, 1000)
+  }
+
+</script>
+</body>
+</html>

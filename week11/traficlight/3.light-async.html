@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  .light {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    display: flex;
+    opacity: 0.3;
+  }
+  .yellow {
+    background-color: yellow;
+  }
+  .red {
+    background-color: red;
+  }
+  .green {
+    background-color: green;
+  }
+  .active {
+    opacity: 1;
+  }
+</style>
+<body>
+  <div id="app"></div>
+<script>
+  let lightStatus = 1
+  function switchLight(color) {
+    switch(color) {
+      case 'red':
+        lightStatus = 1
+        break
+      case 'green':
+        lightStatus = 2
+        break
+      case 'yellow':
+        lightStatus = 3
+        break
+    }
+  }
+  function render() {
+    document.getElementById('app').innerHTML = ''
+    let red = document.createElement('div')
+    let green = document.createElement('div')
+    let yellow = document.createElement('div')
+
+    red.classList.add('light')
+    red.classList.add('red')
+    green.classList.add('light')
+    green.classList.add('green')
+    yellow.classList.add('light')
+    yellow.classList.add('yellow')
+    red.classList.remove('active')
+    green.classList.remove('active')
+    yellow.classList.remove('active')
+
+    if(lightStatus === 1) {
+      red.classList.add('active')
+    } else if(lightStatus === 2) {
+      green.classList.add('active')
+    } else if(lightStatus === 3) {
+      yellow.classList.add('active')
+    }
+
+    document.getElementById('app').appendChild(red)
+    document.getElementById('app').appendChild(green)
+    document.getElementById('app').appendChild(yellow)
+  }
+
+  function sleep(t){
+    return new Promise((res, rej) => {
+      setTimeout(res, t)
+    })
+  }
+
+  // final emit
+  async function go() {
+    switchLight('green')
+    render()
+
+    await sleep(1000)
+    switchLight('yellow')
+    render()
+
+    await sleep(2000)
+    switchLight('red')
+    render()
+
+    await sleep(3000)
+    go()
+  }
+</script>
+</body>
+</html>
