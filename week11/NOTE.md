@@ -31,6 +31,12 @@ for await(let v of g()) {
 }
 ```
 ## 寻路
+## step1 画地图
+### map
+### seleted
+### clear
+### data sync
+### localstorage
 
 ## 答疑
 ```md

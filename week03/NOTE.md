@@ -1,4 +1,4 @@
-Thu 4.23 THU digest 基本类型
+# expression + 类型转化 4.23 THU
 # 0:00-0:20 浮点数在bit中的储存 64bit 实际上是week2的补充
 
 ## background 二进制数组

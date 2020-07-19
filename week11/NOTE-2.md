@@ -1,10 +1,12 @@
-# 编程训练 寻路
-## step1 编辑器
-## step2 路径true false
+# 编程训练 寻路 正则
+## step2 findPath(map, start, end)
 ## 可视化
 ## 画最短路径
 ## leetcode 72 edit distance dp经典题
+## 之前是广搜最短路径，深搜会很费时
+## 优化最短路径（斜向）
 ## 1:06:00 之后开始讲sorted todo
+
 ## 2:24:00开始 正则
 ```md
 1. ?: 捕获 不捕获
