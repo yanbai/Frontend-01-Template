@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .carousel {
+      width: 500px;
+      height: 300px;
+      white-space: nowrap;
+      outline: 1px solid blue;
+      overflow: hidden;
+      /* zoom: 0.25; */
+      margin: 0 auto;
+    }
+    .carousel > img {
+      width: 100%;
+      display: inline-block;
+      object-fit: cover;
+      transition: ease 0.5s;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+</body>
+<script>
+  function sleep(t) {
+    return new Promise((res, rej) => {
+      setTimeout(res, t)
+    })
+  }
+class Carousel{
+  constructor(options) {
+    this.root = null
+    this.position = 0
+    Object.assign(this, options)
+  }
+  render() {
+    let that = this
+    let container = document.createElement('div')
+    container.classList.add('carousel')
+    this.data.forEach((item, index) => {
+      let img = document.createElement('img')
+      img.src = item
+      container.appendChild(img)
+    })
+    this.root = container
+
+
+    // let clientX
+
+    // function up() {
+    //   that.root.removeEventListener('mousemove', move)
+    //   that.root.removeEventListener('mouseup', up)
+    // }
+
+    // function move(e, startX) {
+    //   let offsetX = e.clientX - startX
+
+    //   let imgs = document.querySelectorAll('.carousel>img')
+    //   let nextPostion = (that.position+1)%imgs.length
+    //   let lastPosition = (that.position-1 + imgs.length)%imgs.length
+
+    //   let current = document.querySelectorAll('.carousel>img')[that.position]
+    //   let next = document.querySelectorAll('.carousel>img')[that.nextPostion]
+
+    //   current.style.transition = 'initial'
+    //   current.style.transform = `translateX(${-500-500*that.position}px)`
+    //   console.log(`translateX('${-500-500*that.position}px')`)
+    // }
+
+    // this.root.addEventListener('mousedown', (e) => {
+    //   let startX = e.clientX
+    //   let offsetX = e.clientX - startX
+
+    //   let imgs = document.querySelectorAll('.carousel>img')
+    //   let nextPostion = (that.position+1)%imgs.length
+    //   let lastPosition = (that.position-1 + imgs.length)%imgs.length
+
+    //   let current = document.querySelectorAll('.carousel>img')[that.position]
+    //   let next = document.querySelectorAll('.carousel>img')[that.nextPostion]
+
+    //   current.style.transition = 'initial'
+    //   current.style.transform = `translateX(${-500-500*that.position}px)`
+    //   console.log(`translateX('${-500-500*that.position}px')`)
+
+    //   that.root.addEventListener('mouseup', up)
+    // })
+
+    this.root.addEventListener('mousedown', (e) => {
+      // startX
+      // nextPosition lastPosition
+      // current next last
+      // initial transform
+      let startX = e.clientX
+      let imgs = document.querySelectorAll('.carousel>img')
+      let nextPosition = (that.position + 1)%imgs.length
+      let lastPosition = (that.position - 1 + imgs.length)%imgs.length
+
+      let current = imgs[that.position]
+      let next = imgs[nextPosition]
+      let last = imgs[lastPosition]
+
+      current.style.transition = 'initial'
+      last.style.transition = 'initial'
+      next.style.transition = 'initial'
+
+      current.style.transform = `translateX(${-500*that.position}px)`
+      last.style.transform = `translateX(${-500-500*lastPosition}px)`
+      next.style.transform = `translateX(${500-500*nextPosition}px)`
+
+      let move = (e) => {
+        current.style.transition = 'ease 0s'
+        last.style.transition = 'ease 0s'
+        next.style.transition = 'ease 0s'
+
+        current.style.transform = `translateX(${-500*that.position + (e.clientX - startX)}px)`
+        last.style.transform = `translateX(${-500-500*lastPosition + (e.clientX - startX)}px)`
+        next.style.transform = `translateX(${500-500*nextPosition + (e.clientX - startX)}px)`
+      }
+      let up = (e) => {
+        let offset = 0
+        if(e.clientX - startX > 250) {
+          offset = 1
+        } else if(e.clientX - startX < -250) {
+          offset = -1
+        }
+
+        current.style.transition = 'initial'
+        last.style.transition = 'initial'
+        next.style.transition = 'initial'
+
+        current.style.transform = `translateX(${(500*offset)-500*that.position}px)`
+        last.style.transform = `translateX(${(500*offset)-500-500*lastPosition}px)`
+        next.style.transform = `translateX(${(500*offset)+500-500*nextPosition}px)`
+
+        that.position = (that.position - offset + imgs.length)%imgs.length
+
+        document.removeEventListener('mousemove', move)
+        document.removeEventListener('mouseup', up)
+      }
+      document.addEventListener('mousemove', move)
+      document.addEventListener('mouseup', up)
+    })
+    this.root.addEventListener('dragstart', e=>e.preventDefault())
+  }
+  async run() {
+    let {
+      position
+    } = this
+    let imgs = document.querySelectorAll('.carousel>img')
+    let current = imgs[position]
+    let next = imgs[(position + 1)%imgs.length]
+
+    current.style.transition = 'initial'
+    next.style.transition = 'initial'
+    current.style.transform = `translateX(${-100*position}%)`
+    next.style.transform = `translateX(${100-100*((position + 1)%imgs.length)}%)`
+
+    await sleep(16)
+    current.style.transition = 'all 2s ease'
+    next.style.transition = 'all 2s ease'
+    current.style.transform = `translateX(${-100-100*position}%)`
+    next.style.transform = `translateX(${-100*((position + 1)%imgs.length)}%)`
+
+    this.position = (position + 1)%imgs.length
+    if(this.enabledAuto) {
+      await sleep(5000)
+      this.run()
+    }
+  }
+}
+
+// create
+let carousel = new Carousel({
+  enabledAuto: false
+})
+
+// update
+carousel.data = [
+  'https://static001.geekbang.org/resource/image/bb/21/bb38fb7c1073eaee1755f81131f11d21.jpg',
+  'https://static001.geekbang.org/resource/image/1b/21/1b809d9a2bdf3ecc481322d7c9223c21.jpg',
+  'https://static001.geekbang.org/resource/image/b6/4f/b6d65b2f12646a9fd6b8cb2b020d754f.jpg',
+  'https://static001.geekbang.org/resource/image/73/e4/730ea9c393def7975deceb48b3eb6fe4.jpg',
+]
+carousel.render()
+
+// mount
+document.getElementById('app').appendChild(carousel.root)
+
+// carousel.run()
+
+</script>
+</html>

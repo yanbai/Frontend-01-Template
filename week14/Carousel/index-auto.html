@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .carousel {
+      width: 500px;
+      height: 300px;
+      white-space: nowrap;
+      outline: 1px solid blue;
+      overflow: hidden;
+      zoom: 0.25;
+      margin: 0 auto;
+    }
+    .carousel > img {
+      width: 100%;
+      display: inline-block;
+      object-fit: cover;
+      transition: ease 0.5s;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+</body>
+<script>
+  function sleep(t) {
+    return new Promise((res, rej) => {
+      setTimeout(res, t)
+    })
+  }
+class Carousel{
+  constructor(options) {
+    this.root = null
+    this.position = 0
+    Object.assign(this, options)
+  }
+  render() {
+    let container = document.createElement('div')
+    container.classList.add('carousel')
+    this.data.forEach((item, index) => {
+      let img = document.createElement('img')
+      img.src = item
+      container.appendChild(img)
+    })
+    this.root = container
+  }
+  async run() {
+    let {
+      position
+    } = this
+    let imgs = document.querySelectorAll('.carousel>img')
+    let current = imgs[position]
+    let next = imgs[(position + 1)%imgs.length]
+
+    current.style.transition = 'initial'
+    next.style.transition = 'initial'
+    current.style.transform = `translateX(${-100*position}%)`
+    next.style.transform = `translateX(${100-100*((position + 1)%imgs.length)}%)`
+
+    await sleep(16)
+    current.style.transition = 'all 2s ease'
+    next.style.transition = 'all 2s ease'
+    current.style.transform = `translateX(${-100-100*position}%)`
+    next.style.transform = `translateX(${-100*((position + 1)%imgs.length)}%)`
+
+    this.position = (position + 1)%imgs.length
+    if(this.enabledAuto) {
+      await sleep(5000)
+      this.run()
+    }
+  }
+}
+
+// create
+let carousel = new Carousel({
+  enabledAuto: true
+})
+
+// update
+carousel.data = [
+  'https://static001.geekbang.org/resource/image/bb/21/bb38fb7c1073eaee1755f81131f11d21.jpg',
+  'https://static001.geekbang.org/resource/image/1b/21/1b809d9a2bdf3ecc481322d7c9223c21.jpg',
+  'https://static001.geekbang.org/resource/image/b6/4f/b6d65b2f12646a9fd6b8cb2b020d754f.jpg',
+  'https://static001.geekbang.org/resource/image/73/e4/730ea9c393def7975deceb48b3eb6fe4.jpg',
+]
+carousel.render()
+
+// mount
+document.getElementById('app').appendChild(carousel.root)
+
+carousel.run()
+
+</script>
+</html>
