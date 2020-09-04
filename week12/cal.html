@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function tokenize(source) {
+      let regexp = /([0-9\.]+)|([ ]+)|([\r\n]+)|(\+)|(\-)|(\*)|(\/)/g
+
+      let dic = ["Number", "Whitespace", "LineTerminator", "+", "-", "*", "/"]
+
+      let result = null
+      let lastIndex = 0
+
+      do {
+        lastIndex = regexp.lastIndex
+        result = regexp.exec(source)
+        if(!result) break
+
+        for(let i=0; i<dic.length; i++) {
+          if(result[i+1])
+            console.log(dic[i])
+        }
+
+        console.log(result[0])
+      } while(result)
+    }
+
+    tokenize("1024 + 10 * 25")
+  </script>
+</body>
+</html>
