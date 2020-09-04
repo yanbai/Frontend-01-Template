@@ -1,0 +1,61 @@
+<!-- <script type="module">
+  import Timeline from './Timeline.js'
+  const timeline = new Timeline
+  timeline.start()
+</script> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+</body>
+
+<script>
+  class Timeline {
+    tick() {
+      let t = Date.now() - this.startTime
+
+      for(let animation of animations) {
+        if(t > animation.duration + animation.delay)
+          continue
+        let {
+          object,
+          property,
+          start,
+          end,
+          timingFunciton,
+          delay
+        } = animation
+        object[property] = timingFunction(start, end)(t-delay)
+      }
+
+      requestAnimationFrame(() => this.tick())
+    }
+    start() {
+      this.tick()
+    }
+  }
+
+  class Animation {
+
+  }
+  let el = document.getElementById('el')
+  const timeline = new Timeline()
+  timeline.add(new Animation(
+    el.style,
+    'transform',
+    v => `translateX(${v}px)`,
+    0,
+    200,
+    5000,
+    0
+  ))
+  // timeline.start()
+
+</script>
+</html>
