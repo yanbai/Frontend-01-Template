@@ -88,14 +88,20 @@ https://stackoverflow.com/questions/50252097/what-are-non-replaced-inline-blocks
 ```md
 flex是block level,不是block container,所以不产生bfc
 flex item产生bfc
-只有block既是block level box又是block container
+只有block既是block level box又是block container，只有block是block box
 只有inline-block table-cell不是block level box却是block container
 block flex table grid是block level box
+
+
+block level box(表示可以被放入bfc)             block container(表示可以容纳bfc, 产生bfc)
+block flex table grid                        block inline-block table-cell
+
+
 ```
 ## winter总结
 ```md
-block-level 表示可以被放入bfc
-block-container 表示可以容纳bfc
+block-level box 表示可以被放入bfc
+block-container 生成bfc
 block-box = block-level + block-container
 block-box 如果 overflow 是 visible， 那么就跟父bfc合并
 ```

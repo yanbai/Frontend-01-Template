@@ -14,10 +14,6 @@ function finda(c) {
     }
 }
 
-function end(c) {
-    return end
-}
-
 function findB(c) {
     if(c === 'b') {
         return findC
@@ -48,6 +44,10 @@ function findE(c) {
     } else {
         return finda(c)
     }
+}
+
+function end(c) {
+  return end
 }
 
 let res = start('sfsabcdesdf')

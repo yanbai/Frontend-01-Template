@@ -105,7 +105,7 @@ function endTagOpen(c) {
 
     } else {
 
-    } 
+    }
 }
 
 function tagName(c) {
@@ -166,6 +166,29 @@ function attributeName(c) {
         currentAttribute.name += c
         return attributeName
     }
+}
+
+function afterAttributeName(c) {
+  if(c.match(spaceRule)) {
+      return afterAttributeName
+  } else if(c === '/') {
+      return selfClosingStartTag
+  } else if(c === '=') {
+      return beforeAttributeValue
+  } else if(c === '>') {
+      currentToken[currentAttribute.name] = currentAttribute.value
+      emit(currentToken)
+      return data
+  } else if(c === EOF) {
+
+  } else {
+      currentToken[currentAttribute.name] = currentAttribute.value
+      currentAttribute = {
+          name: '',
+          value: ''
+      }
+      return attributeName(c)
+  }
 }
 
 function beforeAttributeValue(c) {
@@ -250,34 +273,16 @@ function afterQuotedAttributeValue(c) {
     }
 }
 
-function afterAttributeName(c) {
-    if(c.match(spaceRule)) {
-        return afterAttributeName
-    } else if(c === '/') {
-        return selfClosingStartTag
-    } else if(c === '=') {
-        return beforeAttributeValue
-    } else if(c === '>') {
-        currentToken[currentAttribute.name] = currentAttribute.value
-        emit(currentToken)
-        return data
-    } else if(c === EOF) {
-
-    } else {
-        currentToken[currentAttribute.name] = currentAttribute.value
-        currentAttribute = {
-            name: '',
-            value: ''
-        }
-        return attributeName(c)
-    }
-}
-
 function parseHTML (html){
     let state = data
     for(let c of html) {
         state = state(c)
     }
     state = state(EOF)
+    return stack[0]
 }
+
+let res = parseHTML('<div class="container" id="app">sub_1<span>sub_2</span></div>')
+console.log(res)
+console.log(stack)
 module.exports.parseHTML = parseHTML
